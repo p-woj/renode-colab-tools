@@ -66,7 +66,27 @@ def show_memory_access(metricsParser, fraction=1):
   
   iplot(fig)
 
-def show_peripheral_access(metricsParser, fraction=1):
+def show_peripheral_writes(metricsParser, fraction=1):
+  peripherals, peripheralEntries = metricsParser.get_peripheral_entries()
+  data = pd.DataFrame(peripheralEntries, columns=['realTime', 'virtualTime', 'operation', 'address'])
+
+  figWrites = go.Figure()
+
+  for key, value in peripherals.items():
+    tempData = data[data.address >= value[0]]
+    peripheralEntries = tempData[tempData.address <= value[1]]
+    writeOperationFilter = peripheralEntries['operation'] == bytes([1])
+    writeEntries = _reduce_sample(peripheralEntries[writeOperationFilter], fraction)
+    if not writeEntries.empty:
+      figWrites.add_trace(go.Scatter(x=writeEntries['virtualTime'], y=writeEntries.index, name=key))
+
+  figWrites.update_layout(title='Peripheral writes',
+                  xaxis_title='Virtual Time [ms]',
+                  yaxis_title='Peripheral write operations')
+
+  iplot(figWrites)
+
+def show_peripheral_reads(metricsParser, fraction=1):
   peripherals, peripheralEntries = metricsParser.get_peripheral_entries()
   data = pd.DataFrame(peripheralEntries, columns=['realTime', 'virtualTime', 'operation', 'address'])
 
@@ -77,24 +97,19 @@ def show_peripheral_access(metricsParser, fraction=1):
     tempData = data[data.address >= value[0]]
     peripheralEntries = tempData[tempData.address <= value[1]]
     readOperationFilter = peripheralEntries['operation'] == bytes([0])
-    writeOperationFilter = peripheralEntries['operation'] == bytes([1])
     readEntries = _reduce_sample(peripheralEntries[readOperationFilter], fraction)
-    writeEntries = _reduce_sample(peripheralEntries[writeOperationFilter], fraction)
-    if not writeEntries.empty:
-      figWrites.add_trace(go.Scatter(x=writeEntries['virtualTime'], y=writeEntries.index, name=key))
     if not readEntries.empty:
-      figReads.add_trace(go.Scatter(x=readEntries['virtualTime'], y=writeEntries.index, name=key))
+      figReads.add_trace(go.Scatter(x=readEntries['virtualTime'], y=readEntries.index, name=key))
 
-  figWrites.update_layout(title='Peripheral writes',
-                  xaxis_title='Virtual Time [ms]',
-                  yaxis_title='Peripheral write operations')
-  
   figReads.update_layout(title='Peripheral reads',
                   xaxis_title='Virtual Time [ms]',
                   yaxis_title='Peripheral read operations')
 
-  iplot(figWrites)
   iplot(figReads)
+
+def show_peripheral_access(metricsParser, fraction=1):
+  show_peripheral_writes(metricsParser, fraction)
+  show_peripheral_reads(metricsParser, fraction)
 
 def show_exceptions(metricsParser, fraction=1):
   exceptionEntries = metricsParser.get_exceptions_entries()
