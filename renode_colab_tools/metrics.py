@@ -21,14 +21,16 @@ def configure_plotly_browser_state():
 
 def display_metrics(metricsParser):
     configure_plotly_browser_state()
-    tb = widgets.TabBar(['instructions', 'memory', 'peripherals', 'exceptions'], location='top')
+    tb = widgets.TabBar(['instructions', 'memory', 'peripheral writes', 'peripheral reads', 'exceptions'], location='top')
     with tb.output_to(0):
         show_executed_instructions(metricsParser)
     with tb.output_to(1):
         show_memory_access(metricsParser)
     with tb.output_to(2):
-        show_peripheral_access(metricsParser)
+        show_peripheral_writes(metricsParser)
     with tb.output_to(3):
+        show_peripheral_reads(metricsParser)
+    with tb.output_to(4):
         show_exceptions(metricsParser)
 
 
