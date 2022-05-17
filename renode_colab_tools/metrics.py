@@ -2,6 +2,7 @@ import plotly.graph_objects as go
 import pandas as pd
 from plotly.offline import init_notebook_mode, iplot
 from IPython.display import display
+from google.colab import widgets, output
 
 def configure_plotly_browser_state():
   import IPython
@@ -16,6 +17,20 @@ def configure_plotly_browser_state():
           });
         </script>
         '''))
+
+
+def display_metrics(metricsParser):
+    configure_plotly_browser_state()
+    tb = widgets.TabBar(['instructions', 'memory', 'peripherals', 'exceptions'], location='top')
+    with tb.output_to(0):
+        show_executed_instructions(metricsParser)
+    with tb.output_to(1):
+        show_memory_access(metricsParser)
+    with tb.output_to(2):
+        show_peripheral_access(metricsParser)
+    with tb.output_to(3):
+        show_exceptions(metricsParser)
+
 
 def show_executed_instructions(metricsParser, fraction=1):
   cpus, instructionEntries = metricsParser.get_instructions_entries()
