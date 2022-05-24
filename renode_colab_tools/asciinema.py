@@ -1,3 +1,4 @@
+import base64
 import IPython
 from IPython.display import display
 from pathlib import Path
@@ -13,6 +14,7 @@ def display_asciicast(path):
         shutil.copy(mod_path / file, colab_dir / file)
 
     name = Path(path).name
+    text = base64.b64encode(Path(path).read_text().encode('ascii')).decode('ascii')
     shutil.copy(path, colab_dir / name)
 
     content = """
@@ -24,13 +26,13 @@ def display_asciicast(path):
         script.type = 'text/javascript';
         script.src = `/nbextensions/google.colab/asciinema-player.min.js`;
         script.onload = async function() {{
-            console.log("init done");
-            AsciinemaPlayer.create('/nbextensions/google.colab/{name}', document.getElementById('asciinema-cast-player-{name}'));
+            AsciinemaPlayer.create('data:text/plain;base64,{text}', document.getElementById('asciinema-cast-player-{name}'));
+            console.log("asciinema player init done");
         }}
         document.body.appendChild(script);
     }}
     startTerm();
 </script>
-""".format(name=name)
+""".format(text=text, name=name)
     display(IPython.display.HTML(content))
 
