@@ -4,8 +4,8 @@ from IPython.display import display
 from pathlib import Path
 import shutil
 
-
-def display_asciicast(path):
+# we do this every time, because it doesn't hurt
+def provision_asciinema():
     colab_dir = Path(Path.home() / ".ipython/nbextensions/google.colab")
     colab_dir.mkdir(parents=True, exist_ok=True)
 
@@ -13,15 +13,20 @@ def display_asciicast(path):
     for file in ['asciinema-player.css', 'asciinema-player.min.js']:
         shutil.copy(mod_path / file, colab_dir / file)
 
+
+def display_asciicast(path):
+
+    provision_asciinema()
+
+    # the name is used to uniquely identify container divs
     name = Path(path).name
     text = base64.b64encode(Path(path).read_text().encode('ascii')).decode('ascii')
-    shutil.copy(path, colab_dir / name)
 
     content = """
 <div id="asciinema-cast-player-{name}" style="width: 50%"></div>
 <link rel="stylesheet" type="text/css" href="/nbextensions/google.colab/asciinema-player.css" />
 <script>
-    async function startTerm() {{
+    async function startPlayer() {{
         const script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = `/nbextensions/google.colab/asciinema-player.min.js`;
@@ -31,7 +36,7 @@ def display_asciicast(path):
         }}
         document.body.appendChild(script);
     }}
-    startTerm();
+    startPlayer();
 </script>
 """.format(text=text, name=name)
     display(IPython.display.HTML(content))
