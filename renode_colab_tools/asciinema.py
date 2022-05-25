@@ -18,7 +18,7 @@ def display_asciicast(path):
     shutil.copy(path, colab_dir / name)
 
     content = """
-<div id="asciinema-cast-player-{name}"></div>
+<div id="asciinema-cast-player-{name}" style="width: 50%"></div>
 <link rel="stylesheet" type="text/css" href="/nbextensions/google.colab/asciinema-player.css" />
 <script>
     async function startTerm() {{
