@@ -48,7 +48,8 @@ def show_executed_instructions(metricsParser, fraction=1):
 
   fig.update_layout(title='Executed Instructions',
                   xaxis_title='Virtual Time [ms]',
-                  yaxis_title='Instructions count')
+                  yaxis_title='Instructions count',
+                  showlegend=True)
   
   iplot(fig)
 
@@ -64,7 +65,8 @@ def show_memory_access(metricsParser, fraction=1):
   fig.add_trace(go.Scatter(x=reads['virtualTime'], y=reads.index, name='Reads'))
   fig.update_layout(title='Memory access',
                   xaxis_title='Virtual Time [ms]',
-                  yaxis_title='Memory access operations')
+                  yaxis_title='Memory access operations',
+                  showlegend=True)
   
   iplot(fig)
 
@@ -84,7 +86,8 @@ def show_peripheral_writes(metricsParser, fraction=1):
 
   figWrites.update_layout(title='Peripheral writes',
                   xaxis_title='Virtual Time [ms]',
-                  yaxis_title='Peripheral write operations')
+                  yaxis_title='Peripheral write operations',
+                  showlegend=True)
 
   iplot(figWrites)
 
@@ -105,7 +108,8 @@ def show_peripheral_reads(metricsParser, fraction=1):
 
   figReads.update_layout(title='Peripheral reads',
                   xaxis_title='Virtual Time [ms]',
-                  yaxis_title='Peripheral read operations')
+                  yaxis_title='Peripheral read operations',
+                  showlegend=True)
 
   iplot(figReads)
 
@@ -124,7 +128,8 @@ def show_exceptions(metricsParser, fraction=1):
 
   fig.update_layout(title='Exceptions',
                   xaxis_title='Virtual Time [ms]',
-                  yaxis_title='Exception operations')
+                  yaxis_title='Exception operations',
+                  showlegend=True)
 
   iplot(fig)
 
