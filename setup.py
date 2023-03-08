@@ -8,4 +8,4 @@ setup(name='renode_colab_tools',
       author_email='contact@antmicro.com',
       license='MIT',
       packages=['renode_colab_tools'],
-      package_data={'renode_colab_tools':['asciinema/*']})
+)
